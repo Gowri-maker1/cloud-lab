@@ -1,40 +1,58 @@
-def calculate_gpa(grades, credits):
-    """Calculate GPA from grades and corresponding credit hours."""
-    total_points = sum(grade * credit for grade, credit in zip(grades, credits))
-    total_credits = sum(credits)
-    return total_points / total_credits if total_credits != 0 else 0
+def calculate_cgpa(grades, credits):
+    """
+    Calculate the CGPA given a list of grades and their corresponding credit hours.
+    
+    Parameters:
+    grades (list of float): List of grades received in each course.
+    credits (list of int): List of credit hours for each course.
+    
+    Returns:
+    float: The calculated CGPA.
+    """
+    if len(grades) != len(credits) or not grades or not credits:
+        raise ValueError("Grades and credits lists must be of the same length and cannot be empty.")
+    
+    total_grade_points = 0
+    total_credits = 0
+    
+    for grade, credit in zip(grades, credits):
+        total_grade_points += grade * credit
+        total_credits += credit
+    
+    if total_credits == 0:
+        return 0
+    
+    return total_grade_points / total_credits
 
 def main():
-    print("Cumulative GPA Calculator")
-
-    grades = []
-    credits = []
-
-    while True:
-        try:
-            grade = float(input("Enter grade (or -1 to finish): "))
-            if grade == -1:
-                break
-            if grade < 0 or grade > 4.0:
-                print("Invalid grade. Please enter a grade between 0 and 4.0.")
-                continue
-
-            credit = float(input("Enter credit hours for this course: "))
-            if credit <= 0:
-                print("Invalid credit hours. Please enter a positive number.")
-                continue
-
+    try:
+        num_courses = int(input("Enter the number of courses: "))
+        
+        if num_courses <= 0:
+            print("The number of courses should be greater than zero.")
+            return
+        
+        grades = []
+        credits = []
+        
+        for i in range(num_courses):
+            grade = float(input(f"Enter grade for course {i+1}: "))
+            credit = int(input(f"Enter credit hours for course {i+1}: "))
+            
+            if grade < 0 or credit <= 0:
+                print("Grade should be non-negative and credit hours should be positive.")
+                return
+            
             grades.append(grade)
             credits.append(credit)
-
-        except ValueError:
-            print("Invalid input. Please enter numerical values for grades and credits.")
-
-    if grades and credits:
-        gpa = calculate_gpa(grades, credits)
-        print(f"Your cumulative GPA is: {gpa:.2f}")
-    else:
-        print("No grades were entered. GPA calculation could not be performed.")
+        
+        cgpa = calculate_cgpa(grades, credits)
+        print(f"Your CGPA is: {cgpa:.2f}")
+    
+    except ValueError as ve:
+        print(f"Invalid input: {ve}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()
